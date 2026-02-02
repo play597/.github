@@ -1,0 +1,62 @@
+# play597 Labels 설정
+# gh label create 또는 GitHub Actions로 적용 가능
+
+# === Type (필수) ===
+- name: spec
+  color: "5319E7"
+  description: "기능 명세"
+
+- name: bug
+  color: "D73A4A"
+  description: "버그 수정"
+
+- name: task
+  color: "0075CA"
+  description: "일반 작업"
+
+- name: chore
+  color: "FEF2C0"
+  description: "설정, 문서 등"
+
+# === Priority (필수) ===
+- name: "priority:high"
+  color: "B60205"
+  description: "긴급, 블로커"
+
+- name: "priority:medium"
+  color: "FBCA04"
+  description: "이번 스프린트"
+
+- name: "priority:low"
+  color: "0E8A16"
+  description: "나중에"
+
+# === Domain (선택) ===
+- name: "domain:billing"
+  color: "C2E0C6"
+  description: "결제 관련"
+
+- name: "domain:store"
+  color: "C2E0C6"
+  description: "스토어 관련"
+
+- name: "domain:product"
+  color: "C2E0C6"
+  description: "상품 관련"
+
+- name: "domain:user"
+  color: "C2E0C6"
+  description: "사용자 관련"
+
+- name: "domain:chat"
+  color: "C2E0C6"
+  description: "채팅 관련"
+
+# === Status ===
+- name: "needs-review"
+  color: "FBCA04"
+  description: "리뷰 필요"
+
+- name: "in-progress"
+  color: "1D76DB"
+  description: "진행 중"

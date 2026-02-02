@@ -1,0 +1,62 @@
+name: Spec (기능 명세)
+description: 새로운 기능의 스펙을 작성합니다
+title: "[Spec]: "
+labels: ["spec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Issue = Spec 문서입니다. 기능 명세를 상세히 작성해주세요.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 요약
+      description: 이 기능이 무엇인지 한 문장으로 설명해주세요
+      placeholder: "사용자가 정기결제를 환불 요청할 수 있다"
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: 배경 / 동기
+      description: 왜 이 기능이 필요한가요?
+      placeholder: "현재는 환불을 위해 수동으로 처리해야 해서..."
+
+  - type: textarea
+    id: api-spec
+    attributes:
+      label: API 스펙
+      description: "Endpoint, Request/Response 등"
+      placeholder: |
+        ### Endpoint
+        `POST /api/xxx`
+
+        ### Request
+        ```json
+        { "field": "value" }
+        ```
+
+        ### Response
+        ```json
+        { "success": true, "data": {} }
+        ```
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 완료 조건 (Acceptance Criteria)
+      description: 이 기능이 완료되었다고 판단할 조건들
+      placeholder: |
+        - [ ] 조건 1
+        - [ ] 조건 2
+        - [ ] 테스트 코드 작성
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 참고 사항
+      description: 관련 문서, 디자인, 제약 조건 등
