@@ -1,0 +1,6 @@
+{
+  "name": "play597 Release",
+  "description": "Automated release workflow for play597 projects",
+  "iconName": "rocket",
+  "categories": ["Release", "Deployment"]
+}
