@@ -1,6 +1,0 @@
-{
-  "name": "play597 CI",
-  "description": "Node.js CI workflow for play597 projects",
-  "iconName": "nodejs",
-  "categories": ["Node.js", "CI"]
-}
