@@ -28,9 +28,9 @@ jobs:
           for repo in $repos; do
             echo "=== Deploying to play597/$repo ==="
 
-            # 레포 클론 (shallow)
+            # 레포 클론 (토큰 포함 URL)
             rm -rf /tmp/repo
-            gh repo clone "play597/$repo" /tmp/repo -- --depth 1 2>/dev/null || continue
+            git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/play597/$repo.git" /tmp/repo 2>/dev/null || continue
 
             cd /tmp/repo
 
@@ -54,6 +54,6 @@ jobs:
               echo "  No changes"
             fi
 
-            cd -
+            cd - > /dev/null
             echo ""
           done
