@@ -1,0 +1,52 @@
+name: Deploy Workflows to All Repos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'workflow-templates/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy workflows to all repos
+        env:
+          GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+        run: |
+          # Organization의 모든 레포 (본 레포 제외)
+          repos=$(gh repo list play597 --limit 100 --json name -q '.[].name' | grep -v '^\.github$')
+
+          for repo in $repos; do
+            echo "=== Deploying to play597/$repo ==="
+
+            # workflow-templates 폴더의 모든 파일을 각 레포에 배포
+            for template in workflow-templates/*.yml; do
+              filename=$(basename "$template")
+              content=$(cat "$template")
+
+              # 기존 파일 SHA 가져오기 (업데이트용)
+              sha=$(gh api "repos/play597/$repo/contents/.github/workflows/$filename" --jq '.sha' 2>/dev/null || echo "")
+
+              # 파일 생성 또는 업데이트
+              if [ -n "$sha" ]; then
+                echo "  Updating: $filename"
+                gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
+                  -f message="chore: sync workflow from org template" \
+                  -f content="$(echo "$content" | base64)" \
+                  -f sha="$sha" \
+                  --silent 2>/dev/null || echo "  Failed to update $filename"
+              else
+                echo "  Creating: $filename"
+                gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
+                  -f message="chore: add workflow from org template" \
+                  -f content="$(echo "$content" | base64)" \
+                  --silent 2>/dev/null || echo "  Failed to create $filename"
+              fi
+            done
+
+            echo ""
+          done
