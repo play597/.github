@@ -32,15 +32,15 @@
   description: "나중에"
 
 # === Status ===
-- name: "status:done"
-  color: "FBCA04"
-  description: "완료"
+- name: "status:todo"
+  color: "D73A4A"
+  description: "할 일"
 
 - name: "status:in-progress"
   color: "1D76DB"
   description: "진행 중"
 
-- name: "status:ready"
-  color: "D73A4A"
-  description: "준비됨"
+- name: "status:done"
+  color: "0E8A16"
+  description: "완료"
   
