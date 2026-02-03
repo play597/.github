@@ -6,14 +6,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        Issue = Spec 문서입니다. 기능 명세를 상세히 작성해주세요.
+        Issue = Spec 문서입니다. AI가 이해하고 구현할 수 있도록 명확하게 작성해주세요.
 
   - type: textarea
     id: summary
     attributes:
       label: 요약
       description: 이 기능이 무엇인지 한 문장으로 설명해주세요
-      placeholder: "사용자가 정기결제를 환불 요청할 수 있다"
+      placeholder: "사용자가 프로필 이미지를 변경할 수 있다"
     validations:
       required: true
 
@@ -22,26 +22,46 @@ body:
     attributes:
       label: 배경 / 동기
       description: 왜 이 기능이 필요한가요?
-      placeholder: "현재는 환불을 위해 수동으로 처리해야 해서..."
+      placeholder: "현재는 프로필 이미지 변경이 불가능해서..."
 
   - type: textarea
-    id: api-spec
+    id: detailed-spec
     attributes:
-      label: API 스펙
-      description: "Endpoint, Request/Response 등"
+      label: 상세 스펙
+      description: 기능의 상세 동작을 설명해주세요. 프론트/백엔드/전체 상관없이 자유롭게 작성
       placeholder: |
-        ### Endpoint
-        `POST /api/xxx`
+        ## 동작 흐름
+        1. 사용자가 프로필 페이지에서 이미지 클릭
+        2. 파일 선택 다이얼로그 표시
+        3. 이미지 선택 후 미리보기 표시
+        4. 저장 버튼 클릭 시 업로드
 
-        ### Request
-        ```json
-        { "field": "value" }
-        ```
+        ## 상세 내용
+        - 지원 포맷: jpg, png, webp
+        - 최대 크기: 5MB
+        - 이미지 리사이즈: 200x200
 
-        ### Response
-        ```json
-        { "success": true, "data": {} }
-        ```
+  - type: textarea
+    id: input-output
+    attributes:
+      label: 입력 / 출력
+      description: 이 기능의 입력과 출력을 명시해주세요
+      placeholder: |
+        **입력**
+        - 이미지 파일
+
+        **출력**
+        - 성공: 업로드된 이미지 URL
+        - 실패: 에러 메시지
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: 예시
+      description: 구체적인 사용 예시나 케이스
+      placeholder: |
+        - 정상 케이스: 1MB jpg 파일 업로드 → 성공
+        - 에러 케이스: 10MB 파일 → "파일 크기 초과" 에러
 
   - type: textarea
     id: acceptance-criteria
@@ -49,14 +69,19 @@ body:
       label: 완료 조건 (Acceptance Criteria)
       description: 이 기능이 완료되었다고 판단할 조건들
       placeholder: |
-        - [ ] 조건 1
-        - [ ] 조건 2
+        - [ ] 이미지 업로드 가능
+        - [ ] 미리보기 표시
+        - [ ] 에러 처리
         - [ ] 테스트 코드 작성
     validations:
       required: true
 
   - type: textarea
-    id: notes
+    id: constraints
     attributes:
-      label: 참고 사항
-      description: 관련 문서, 디자인, 제약 조건 등
+      label: 제약 조건 / 참고 사항
+      description: 기술적 제약, 관련 문서, 디자인 링크 등
+      placeholder: |
+        - S3 버킷 사용
+        - 기존 UserService 활용
+        - 디자인: [Figma 링크]
