@@ -59,10 +59,8 @@ jobs:
 
             # 2. labels.yml에 없는 라벨 삭제
             echo "  Cleaning up undefined labels..."
-            existing=$(gh label list --repo "play597/$repo" --json name -q '.[].name')
-
-            for label in $existing; do
-              if ! echo ",$DEFINED_LABELS," | grep -q ",$label,"; then
+            gh label list --repo "play597/$repo" --json name -q '.[].name' | while IFS= read -r label; do
+              if [ -n "$label" ] && ! echo ",$DEFINED_LABELS," | grep -q ",$label,"; then
                 echo "  Deleting: $label"
                 gh label delete "$label" --repo "play597/$repo" --yes 2>/dev/null || true
               fi
