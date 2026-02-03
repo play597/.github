@@ -18,7 +18,7 @@ GitHub Issue 기반의 **Spec-Driven 개발** 워크플로우입니다.
 ### 상태 흐름 (GitHub Project)
 
 ```
-📋 Backlog → 🚧 In Progress → 🧪 Review → ✅ Done
+📋 Todo → 🚧 In Progress → ✅ Done
 ```
 
 ---
@@ -82,14 +82,92 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 
 ---
 
-## 2. AI와 협업하기
+## 2. AI 이슈 생성 플로우
+
+### 생성 플로우
+
+```
+1. 이슈 유형 파악 (Spec/Bug/Task)
+2. 해당 템플릿 확인 (.github/ISSUE_TEMPLATE/*.yml)
+3. 템플릿 형식에 맞게 body 작성
+4. 이슈 생성 (라벨, 프로젝트 연결)
+5. 프로젝트 필드 설정 (Iteration, Target Date, Status)
+```
+
+### 이슈 생성 명령어
+
+```bash
+gh issue create \
+  --title "[Type]: 제목" \
+  --label "type,priority:level" \
+  --project "play597" \
+  --body "템플릿 형식에 맞춘 내용"
+```
+
+### Title 규칙
+
+| Type | Title 형식 |
+|------|------------|
+| Spec | `[Spec]: 기능 설명` |
+| Bug | `[Bug]: 버그 설명` |
+| Task | `[Task]: 작업 설명` |
+
+### Label 조합 (필수)
+
+```bash
+# Spec
+--label "spec,priority:high"
+--label "spec,priority:medium"
+--label "spec,priority:low"
+
+# Bug
+--label "bug,priority:high"
+
+# Task
+--label "task,priority:medium"
+
+# Chore
+--label "chore,priority:low"
+```
+
+### 프로젝트 필드 설정
+
+이슈 생성 후 프로젝트 필드 자동 설정:
+
+| 필드 | 설정 로직 |
+|------|-----------|
+| **Iteration** | 현재 진행 중인 스프린트 |
+| **Target Date** | priority:high → +3일<br>priority:medium → +7일<br>priority:low → 스프린트 끝 |
+| **Status** | 기본 `Todo` |
+
+### 예시
+
+```bash
+# Spec 이슈 생성
+gh issue create \
+  --title "[Spec]: 사용자 프로필 이미지 변경" \
+  --label "spec,priority:high" \
+  --project "play597" \
+  --body "## 요약
+사용자가 프로필 이미지를 변경할 수 있다.
+
+## 완료 조건
+- [ ] 이미지 업로드 가능
+- [ ] 미리보기 표시
+- [ ] 테스트 코드 작성"
+```
+
+---
+
+## 3. AI와 협업하기
 
 ### Issue 생성 요청
 
 ```
 "프로필 이미지 변경 기능 이슈 만들어줘"
 
-→ AI가 스펙 논의 후 gh issue create로 생성
+→ AI가 스펙 논의 후 이슈 생성
+→ 프로젝트 필드 자동 설정
 ```
 
 ### 스펙 논의 요청
@@ -145,7 +223,7 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 
 | Label | 용도 |
 |-------|------|
-| `status:ready` | 준비됨 |
+| `status:todo` | 할 일 |
 | `status:in-progress` | 진행 중 |
 | `status:done` | 완료 |
 
