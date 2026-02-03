@@ -31,32 +31,16 @@
   color: "0E8A16"
   description: "나중에"
 
-# === Domain (선택) ===
-- name: "domain:billing"
-  color: "C2E0C6"
-  description: "결제 관련"
-
-- name: "domain:store"
-  color: "C2E0C6"
-  description: "스토어 관련"
-
-- name: "domain:product"
-  color: "C2E0C6"
-  description: "상품 관련"
-
-- name: "domain:user"
-  color: "C2E0C6"
-  description: "사용자 관련"
-
-- name: "domain:chat"
-  color: "C2E0C6"
-  description: "채팅 관련"
-
 # === Status ===
-- name: "needs-review"
+- name: "status:done"
   color: "FBCA04"
-  description: "리뷰 필요"
+  description: "완료"
 
-- name: "in-progress"
+- name: "status:in-progress"
   color: "1D76DB"
   description: "진행 중"
+
+- name: "status:ready"
+  color: "D73A4A"
+  description: "준비됨"
+  

@@ -1,0 +1,55 @@
+name: Sync Labels
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'labels.yml'
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get all repos
+        id: repos
+        env:
+          GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+        run: |
+          repos=$(gh repo list play597 --limit 100 --json name -q '.[].name' | tr '\n' ' ')
+          echo "repos=$repos" >> $GITHUB_OUTPUT
+
+      - name: Sync labels to all repos
+        env:
+          GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+        run: |
+          # labels.yml 파싱 및 적용
+          for repo in ${{ steps.repos.outputs.repos }}; do
+            echo "=== Syncing labels to play597/$repo ==="
+
+            # yq로 labels.yml 파싱
+            while IFS= read -r label; do
+              name=$(echo "$label" | cut -d'|' -f1)
+              color=$(echo "$label" | cut -d'|' -f2)
+              desc=$(echo "$label" | cut -d'|' -f3)
+
+              if [ -n "$name" ]; then
+                # 라벨 생성 시도, 실패하면 업데이트
+                gh label create "$name" \
+                  --repo "play597/$repo" \
+                  --color "$color" \
+                  --description "$desc" 2>/dev/null \
+                || gh label edit "$name" \
+                  --repo "play597/$repo" \
+                  --color "$color" \
+                  --description "$desc" 2>/dev/null \
+                || echo "  Skipped: $name"
+              fi
+            done <<< "$(grep -E '^- name:' labels.yml -A2 | \
+              awk '/^- name:/{name=$3} /color:/{color=$2} /description:/{desc=substr($0, index($0,$2)); print name"|"color"|"desc}' | \
+              tr -d '\"')"
+
+            echo ""
+          done
