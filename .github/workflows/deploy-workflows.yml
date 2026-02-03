@@ -23,28 +23,31 @@ jobs:
           for repo in $repos; do
             echo "=== Deploying to play597/$repo ==="
 
-            # workflow-templates 폴더의 모든 파일을 각 레포에 배포
             for template in workflow-templates/*.yml; do
               filename=$(basename "$template")
-              content=$(cat "$template")
 
-              # 기존 파일 SHA 가져오기 (업데이트용)
-              sha=$(gh api "repos/play597/$repo/contents/.github/workflows/$filename" --jq '.sha' 2>/dev/null || echo "")
+              # base64 인코딩 (macOS와 Linux 호환)
+              content_base64=$(base64 -w 0 < "$template" 2>/dev/null || base64 < "$template" | tr -d '\n')
 
-              # 파일 생성 또는 업데이트
-              if [ -n "$sha" ]; then
-                echo "  Updating: $filename"
-                gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
+              # 기존 파일 확인
+              existing=$(gh api "repos/play597/$repo/contents/.github/workflows/$filename" 2>/dev/null || echo "")
+
+              if [ -n "$existing" ] && echo "$existing" | grep -q '"sha"'; then
+                # 파일 존재 - 업데이트
+                sha=$(echo "$existing" | grep -o '"sha": "[^"]*"' | head -1 | cut -d'"' -f4)
+                echo "  Updating: $filename (sha: $sha)"
+
+                result=$(gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
                   -f message="chore: sync workflow from org template" \
-                  -f content="$(echo "$content" | base64)" \
-                  -f sha="$sha" \
-                  --silent 2>/dev/null || echo "  Failed to update $filename"
+                  -f content="$content_base64" \
+                  -f sha="$sha" 2>&1) && echo "  Success" || echo "  Failed: $result"
               else
+                # 파일 없음 - 생성
                 echo "  Creating: $filename"
-                gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
+
+                result=$(gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
                   -f message="chore: add workflow from org template" \
-                  -f content="$(echo "$content" | base64)" \
-                  --silent 2>/dev/null || echo "  Failed to create $filename"
+                  -f content="$content_base64" 2>&1) && echo "  Success" || echo "  Failed: $result"
               fi
             done
 
