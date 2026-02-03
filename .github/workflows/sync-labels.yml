@@ -21,22 +21,28 @@ jobs:
           repos=$(gh repo list play597 --limit 100 --json name -q '.[].name' | tr '\n' ' ')
           echo "repos=$repos" >> $GITHUB_OUTPUT
 
+      - name: Parse labels.yml
+        id: labels
+        run: |
+          # labels.yml에서 라벨 이름만 추출
+          labels=$(grep -E '^- name:' labels.yml | awk '{print $3}' | tr -d '"' | tr '\n' ',' | sed 's/,$//')
+          echo "defined=$labels" >> $GITHUB_OUTPUT
+
       - name: Sync labels to all repos
         env:
           GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+          DEFINED_LABELS: ${{ steps.labels.outputs.defined }}
         run: |
-          # labels.yml 파싱 및 적용
           for repo in ${{ steps.repos.outputs.repos }}; do
             echo "=== Syncing labels to play597/$repo ==="
 
-            # yq로 labels.yml 파싱
+            # 1. labels.yml에 정의된 라벨 생성/업데이트
             while IFS= read -r label; do
               name=$(echo "$label" | cut -d'|' -f1)
               color=$(echo "$label" | cut -d'|' -f2)
               desc=$(echo "$label" | cut -d'|' -f3)
 
               if [ -n "$name" ]; then
-                # 라벨 생성 시도, 실패하면 업데이트
                 gh label create "$name" \
                   --repo "play597/$repo" \
                   --color "$color" \
@@ -50,6 +56,17 @@ jobs:
             done <<< "$(grep -E '^- name:' labels.yml -A2 | \
               awk '/^- name:/{name=$3} /color:/{color=$2} /description:/{desc=substr($0, index($0,$2)); print name"|"color"|"desc}' | \
               tr -d '\"')"
+
+            # 2. labels.yml에 없는 라벨 삭제
+            echo "  Cleaning up undefined labels..."
+            existing=$(gh label list --repo "play597/$repo" --json name -q '.[].name')
+
+            for label in $existing; do
+              if ! echo ",$DEFINED_LABELS," | grep -q ",$label,"; then
+                echo "  Deleting: $label"
+                gh label delete "$label" --repo "play597/$repo" --yes 2>/dev/null || true
+              fi
+            done
 
             echo ""
           done
