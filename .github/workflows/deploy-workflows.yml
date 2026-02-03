@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Deploy workflows to all repos
         env:
           GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
@@ -23,33 +28,32 @@ jobs:
           for repo in $repos; do
             echo "=== Deploying to play597/$repo ==="
 
-            for template in workflow-templates/*.yml; do
+            # 레포 클론 (shallow)
+            rm -rf /tmp/repo
+            gh repo clone "play597/$repo" /tmp/repo -- --depth 1 2>/dev/null || continue
+
+            cd /tmp/repo
+
+            # .github/workflows 폴더 생성
+            mkdir -p .github/workflows
+
+            # 템플릿 복사
+            for template in $GITHUB_WORKSPACE/workflow-templates/*.yml; do
               filename=$(basename "$template")
-
-              # base64 인코딩 (macOS와 Linux 호환)
-              content_base64=$(base64 -w 0 < "$template" 2>/dev/null || base64 < "$template" | tr -d '\n')
-
-              # 기존 파일 확인
-              existing=$(gh api "repos/play597/$repo/contents/.github/workflows/$filename" 2>/dev/null || echo "")
-
-              if [ -n "$existing" ] && echo "$existing" | grep -q '"sha"'; then
-                # 파일 존재 - 업데이트
-                sha=$(echo "$existing" | grep -o '"sha": "[^"]*"' | head -1 | cut -d'"' -f4)
-                echo "  Updating: $filename (sha: $sha)"
-
-                result=$(gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
-                  -f message="chore: sync workflow from org template" \
-                  -f content="$content_base64" \
-                  -f sha="$sha" 2>&1) && echo "  Success" || echo "  Failed: $result"
-              else
-                # 파일 없음 - 생성
-                echo "  Creating: $filename"
-
-                result=$(gh api -X PUT "repos/play597/$repo/contents/.github/workflows/$filename" \
-                  -f message="chore: add workflow from org template" \
-                  -f content="$content_base64" 2>&1) && echo "  Success" || echo "  Failed: $result"
-              fi
+              cp "$template" ".github/workflows/$filename"
+              echo "  Copied: $filename"
             done
 
+            # 변경사항 있으면 커밋 & 푸시
+            if [ -n "$(git status --porcelain)" ]; then
+              git add .github/workflows/
+              git commit -m "chore: sync workflows from org template"
+              git push
+              echo "  Pushed changes"
+            else
+              echo "  No changes"
+            fi
+
+            cd -
             echo ""
           done
