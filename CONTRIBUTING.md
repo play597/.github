@@ -84,14 +84,21 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 
 ## 2. AI 이슈 생성 플로우
 
+### 템플릿 파일
+
+| Type | 템플릿 파일 | Label |
+|------|-------------|-------|
+| Spec | `.github/ISSUE_TEMPLATE/spec.yml` | `spec` |
+| Bug | `.github/ISSUE_TEMPLATE/bug_report.yml` | `bug` |
+| Task | `.github/ISSUE_TEMPLATE/task.yml` | `task` |
+
 ### 생성 플로우
 
 ```
 1. 이슈 유형 파악 (Spec/Bug/Task)
-2. 해당 템플릿 확인 (.github/ISSUE_TEMPLATE/*.yml)
+2. 해당 템플릿 파일 읽기 → body 필드 구조 확인
 3. 템플릿 형식에 맞게 body 작성
-4. 이슈 생성 (라벨, 프로젝트 연결)
-5. 프로젝트 필드 설정 (Iteration, Target Date, Status)
+4. 이슈 생성
 ```
 
 ### 이슈 생성 명령어
@@ -99,57 +106,12 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 ```bash
 gh issue create \
   --title "[Type]: 제목" \
-  --label "type" \
+  --label "{label}" \
   --project "play597" \
-  --body "템플릿 형식에 맞춘 내용"
+  --body "{템플릿 필드 구조에 맞춘 내용}"
 ```
 
-### Title 규칙
-
-| Type | Title 형식 |
-|------|------------|
-| Spec | `[Spec]: 기능 설명` |
-| Bug | `[Bug]: 버그 설명` |
-| Task | `[Task]: 작업 설명` |
-
-### Label (필수)
-
-```bash
---label "spec"   # 기능 명세
---label "bug"    # 버그 수정
---label "task"   # 일반 작업
---label "chore"  # 설정, 문서 등
-```
-
-> **Note:** Priority와 Status는 GitHub Project 필드에서 관리합니다.
-
-### 프로젝트 필드 설정
-
-이슈 생성 후 프로젝트에서 필드 설정:
-
-| 필드 | 설명 |
-|------|------|
-| **Status** | Todo → In Progress → Done |
-| **Priority** | High / Medium / Low |
-| **Iteration** | 현재 스프린트 |
-| **Target Date** | 목표 완료일 |
-
-### 예시
-
-```bash
-# Spec 이슈 생성
-gh issue create \
-  --title "[Spec]: 사용자 프로필 이미지 변경" \
-  --label "spec" \
-  --project "play597" \
-  --body "## 요약
-사용자가 프로필 이미지를 변경할 수 있다.
-
-## 완료 조건
-- [ ] 이미지 업로드 가능
-- [ ] 미리보기 표시
-- [ ] 테스트 코드 작성"
-```
+> **Note:** Priority와 Status는 이슈 라벨이 아닌 **GitHub Project 필드**에서 관리합니다.
 
 ---
 
