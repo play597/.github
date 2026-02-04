@@ -18,29 +18,3 @@
   color: "FEF2C0"
   description: "설정, 문서 등"
 
-# === Priority (필수) ===
-- name: "priority:high"
-  color: "B60205"
-  description: "긴급, 블로커"
-
-- name: "priority:medium"
-  color: "FBCA04"
-  description: "이번 스프린트"
-
-- name: "priority:low"
-  color: "0E8A16"
-  description: "나중에"
-
-# === Status ===
-- name: "status:todo"
-  color: "D73A4A"
-  description: "할 일"
-
-- name: "status:in-progress"
-  color: "1D76DB"
-  description: "진행 중"
-
-- name: "status:done"
-  color: "0E8A16"
-  description: "완료"
-  

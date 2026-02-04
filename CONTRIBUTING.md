@@ -99,7 +99,7 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 ```bash
 gh issue create \
   --title "[Type]: 제목" \
-  --label "type,priority:level" \
+  --label "type" \
   --project "play597" \
   --body "템플릿 형식에 맞춘 내용"
 ```
@@ -112,33 +112,27 @@ gh issue create \
 | Bug | `[Bug]: 버그 설명` |
 | Task | `[Task]: 작업 설명` |
 
-### Label 조합 (필수)
+### Label (필수)
 
 ```bash
-# Spec
---label "spec,priority:high"
---label "spec,priority:medium"
---label "spec,priority:low"
-
-# Bug
---label "bug,priority:high"
-
-# Task
---label "task,priority:medium"
-
-# Chore
---label "chore,priority:low"
+--label "spec"   # 기능 명세
+--label "bug"    # 버그 수정
+--label "task"   # 일반 작업
+--label "chore"  # 설정, 문서 등
 ```
+
+> **Note:** Priority와 Status는 GitHub Project 필드에서 관리합니다.
 
 ### 프로젝트 필드 설정
 
-이슈 생성 후 프로젝트 필드 자동 설정:
+이슈 생성 후 프로젝트에서 필드 설정:
 
-| 필드 | 설정 로직 |
-|------|-----------|
-| **Iteration** | 현재 진행 중인 스프린트 |
-| **Target Date** | priority:high → +3일<br>priority:medium → +7일<br>priority:low → 스프린트 끝 |
-| **Status** | 기본 `Todo` |
+| 필드 | 설명 |
+|------|------|
+| **Status** | Todo → In Progress → Done |
+| **Priority** | High / Medium / Low |
+| **Iteration** | 현재 스프린트 |
+| **Target Date** | 목표 완료일 |
 
 ### 예시
 
@@ -146,7 +140,7 @@ gh issue create \
 # Spec 이슈 생성
 gh issue create \
   --title "[Spec]: 사용자 프로필 이미지 변경" \
-  --label "spec,priority:high" \
+  --label "spec" \
   --project "play597" \
   --body "## 요약
 사용자가 프로필 이미지를 변경할 수 있다.
@@ -204,28 +198,14 @@ gh issue create \
 
 ### Type (필수)
 
-| Label | 용도 |
-|-------|------|
-| `spec` | 기능 명세 |
-| `bug` | 버그 수정 |
-| `task` | 일반 작업 |
-| `chore` | 설정, 문서 등 |
+| Label | 용도 | 템플릿 |
+|-------|------|--------|
+| `spec` | 기능 명세 | spec.yml |
+| `bug` | 버그 수정 | bug_report.yml |
+| `task` | 일반 작업 | task.yml |
+| `chore` | 설정, 문서 등 | - |
 
-### Priority (필수)
-
-| Label | 용도 |
-|-------|------|
-| `priority:high` | 긴급, 블로커 |
-| `priority:medium` | 이번 스프린트 |
-| `priority:low` | 나중에 |
-
-### Status (Project 연동)
-
-| Label | 용도 |
-|-------|------|
-| `status:todo` | 할 일 |
-| `status:in-progress` | 진행 중 |
-| `status:done` | 완료 |
+> **Note:** Priority와 Status는 라벨이 아닌 **GitHub Project 필드**에서 관리합니다.
 
 ---
 
@@ -377,7 +357,7 @@ git add . && git commit -m "feat: 설명"
 gh pr create --title "feat: 설명" --body "Closes #123"
 
 # Issue 빠른 생성
-gh issue create -t "제목" -b "내용" -l "spec,priority:high"
+gh issue create -t "[Spec]: 제목" -b "내용" -l "spec" --project "play597"
 ```
 
 ---
