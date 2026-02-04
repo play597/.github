@@ -105,11 +105,16 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 
 ```bash
 gh issue create \
+  --repo play597/{repo} \
   --title "[Type]: 제목" \
   --label "{label}" \
+  --assignee @me \
   --project "play597" \
   --body "{템플릿 필드 구조에 맞춘 내용}"
 ```
+
+> 팀원에게 할당 시: `--assignee @me` → `--assignee {username}`
+> 팀원 목록 조회: `gh api orgs/play597/members --jq '.[].login'`
 
 ### 프로젝트 필드 설정 (CLI)
 
