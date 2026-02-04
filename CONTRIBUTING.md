@@ -293,7 +293,7 @@ gh issue list
 gh issue create
 
 # 생성 (한 줄)
-gh issue create -t "제목" -b "내용" -l "spec,priority:high"
+gh issue create -t "[Spec]: 제목" -b "내용" -l "spec" --project "play597"
 
 # 보기
 gh issue view 123
