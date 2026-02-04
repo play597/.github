@@ -127,6 +127,11 @@ gh project item-list 5 --owner play597 --format json | jq -r '.items[] | select(
 PROJECT_ID="PVT_kwDOCnQtDs4BOEu3"
 ITEM_ID="{조회한 아이템 ID}"
 
+# Status 설정
+gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
+  --field-id PVTSSF_lADOCnQtDs4BOEu3zg84eP4 \
+  --single-select-option-id {option_id}
+
 # Priority 설정
 gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
   --field-id PVTSSF_lADOCnQtDs4BOEu3zg9AMZA \
@@ -145,6 +150,12 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 
 **필드 옵션 ID 참조**
 
+| Status | Option ID |
+|--------|-----------|
+| Todo | `f75ad846` |
+| In-Progress | `47fc9ee4` |
+| Done | `98236657` |
+
 | Priority | Option ID |
 |----------|-----------|
 | high | `f206906c` |
@@ -157,7 +168,7 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 | Iteration 2 | `22f73190` | 2026-02-10 |
 | Iteration 3 | `72f9c5cc` | 2026-02-17 |
 
-> **Note:** Status는 기본 `Todo`로 설정됨. 작업 시작 시 `In-Progress`로 변경.
+> **Note:** 이슈 생성 시 Status는 기본값 없음. `Todo`로 설정 필요.
 
 ---
 
