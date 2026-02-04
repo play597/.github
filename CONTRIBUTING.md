@@ -111,7 +111,53 @@ gh issue create \
   --body "{템플릿 필드 구조에 맞춘 내용}"
 ```
 
-> **Note:** Priority와 Status는 이슈 라벨이 아닌 **GitHub Project 필드**에서 관리합니다.
+### 프로젝트 필드 설정 (CLI)
+
+이슈 생성 후 프로젝트 필드를 CLI로 설정합니다.
+
+**1. 아이템 ID 조회**
+
+```bash
+gh project item-list 5 --owner play597 --format json | jq -r '.items[] | select(.content.number == {이슈번호}) | .id'
+```
+
+**2. 필드 설정**
+
+```bash
+PROJECT_ID="PVT_kwDOCnQtDs4BOEu3"
+ITEM_ID="{조회한 아이템 ID}"
+
+# Priority 설정
+gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
+  --field-id PVTSSF_lADOCnQtDs4BOEu3zg9AMZA \
+  --single-select-option-id {option_id}
+
+# Iteration 설정
+gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
+  --field-id PVTIF_lADOCnQtDs4BOEu3zg88_CE \
+  --iteration-id {iteration_id}
+
+# Target Date 설정
+gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
+  --field-id PVTF_lADOCnQtDs4BOEu3zg88_Ho \
+  --date YYYY-MM-DD
+```
+
+**필드 옵션 ID 참조**
+
+| Priority | Option ID |
+|----------|-----------|
+| high | `f206906c` |
+| medium | `5d71a576` |
+| low | `d2751d36` |
+
+| Iteration | Option ID | 시작일 |
+|-----------|-----------|--------|
+| Iteration 1 | `c6894909` | 2026-02-03 |
+| Iteration 2 | `22f73190` | 2026-02-10 |
+| Iteration 3 | `72f9c5cc` | 2026-02-17 |
+
+> **Note:** Status는 기본 `Todo`로 설정됨. 작업 시작 시 `In-Progress`로 변경.
 
 ---
 
