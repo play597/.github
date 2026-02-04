@@ -5,6 +5,31 @@ GitHub Issue 기반의 **Spec-Driven 개발** 워크플로우입니다.
 
 ---
 
+## AI 워크플로우 (Quick Start)
+
+```
+1. 이슈 생성
+   ├── 템플릿 파일 읽기 (.github/ISSUE_TEMPLATE/*.yml)
+   ├── gh issue create (--repo, --label, --assignee, --project, --body)
+   └── 프로젝트 필드 설정 (Status=Todo, Priority, Iteration, Target Date)
+
+2. 작업 시작
+   ├── Status → In-Progress로 변경
+   └── gh issue develop {번호} --checkout
+
+3. 개발
+   ├── 코드 작성
+   └── git commit -m "feat: 설명"
+
+4. PR & 완료
+   ├── gh pr create --body "Closes #{번호}"
+   └── 머지 시 Issue 자동 Close
+```
+
+> 상세 내용은 아래 섹션 참조
+
+---
+
 ## 워크플로우 개요
 
 ```
@@ -18,7 +43,7 @@ GitHub Issue 기반의 **Spec-Driven 개발** 워크플로우입니다.
 ### 상태 흐름 (GitHub Project)
 
 ```
-📋 Todo → 🚧 In Progress → ✅ Done
+📋 Todo → 🚧 In-Progress → ✅ Done
 ```
 
 ---
@@ -177,7 +202,22 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 
 ---
 
-## 3. AI와 협업하기
+## 3. 작업 시작 (Status 변경)
+
+작업 시작 시 Status를 `In-Progress`로 변경합니다.
+
+```bash
+PROJECT_ID="PVT_kwDOCnQtDs4BOEu3"
+ITEM_ID="{아이템 ID}"
+
+gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
+  --field-id PVTSSF_lADOCnQtDs4BOEu3zg84eP4 \
+  --single-select-option-id 47fc9ee4
+```
+
+---
+
+## 4. AI와 협업하기
 
 ### Issue 생성 요청
 
@@ -218,7 +258,7 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 
 ---
 
-## 3. Labels 체계
+## 5. Labels 체계
 
 ### Type (필수)
 
@@ -233,7 +273,7 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 
 ---
 
-## 4. Branch & PR 규칙
+## 6. Branch & PR 규칙
 
 ### 브랜치 생성
 
@@ -279,7 +319,7 @@ gh pr create --title "feat: 프로필 이미지 변경" --body "Closes #123"
 
 ---
 
-## 5. GitHub Project 사용
+## 7. GitHub Project 사용
 
 Org-level Project에서 모든 레포의 Issue를 통합 관리합니다.
 
@@ -292,13 +332,13 @@ Org-level Project에서 모든 레포의 Issue를 통합 관리합니다.
 
 ### 상태 변경
 
-- Issue 생성 시 → `Backlog`
-- 작업 시작 → `In Progress`
-- PR 머지 시 → `Done` (자동)
+- Issue 생성 시 → `Todo` (CLI로 설정)
+- 작업 시작 → `In-Progress`
+- PR 머지 시 → `Done`
 
 ---
 
-## 6. gh CLI 명령어
+## 8. gh CLI 명령어
 
 ### 설치 & 로그인
 
@@ -317,7 +357,7 @@ gh issue list
 gh issue create
 
 # 생성 (한 줄)
-gh issue create -t "[Spec]: 제목" -b "내용" -l "spec" --project "play597"
+gh issue create --repo play597/{repo} -t "[Spec]: 제목" -l "spec" --assignee @me --project "play597" -b "내용"
 
 # 보기
 gh issue view 123
@@ -351,7 +391,7 @@ gh project view [NUMBER] --owner play597
 
 ---
 
-## 7. 체크리스트
+## 9. 체크리스트
 
 ### 작업 시작 전
 - [ ] 관련 Issue가 있는가?
@@ -381,7 +421,7 @@ git add . && git commit -m "feat: 설명"
 gh pr create --title "feat: 설명" --body "Closes #123"
 
 # Issue 빠른 생성
-gh issue create -t "[Spec]: 제목" -b "내용" -l "spec" --project "play597"
+gh issue create --repo play597/{repo} -t "[Spec]: 제목" -l "spec" --assignee @me --project "play597" -b "내용"
 ```
 
 ---
