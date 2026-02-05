@@ -24,3 +24,14 @@ body:
     id: notes
     attributes:
       label: 참고 사항
+
+  - type: textarea
+    id: ai-context
+    attributes:
+      label: AI Context
+      description: AI가 이 이슈를 찾고 이해하는 데 필요한 정보
+      placeholder: |
+        keywords: 영문명, 한글명, 변수명, 에러코드
+        files: src/auth/example.ts
+        deps: library-name
+        related: #이슈번호
