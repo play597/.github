@@ -92,7 +92,7 @@ body:
       label: AI Context
       description: AI가 이 이슈를 찾고 이해하는 데 필요한 정보
       placeholder: |
-        keywords: 영문명, 한글명, 변수명, 에러코드
-        files: src/auth/example.ts
-        deps: library-name
-        related: #이슈번호
+        keywords: Dream Security, 드림시큐리티, mobileOK, ACCOUNT_006
+        files: src/auth/mobileok.ts
+        deps: mok-key-manager
+        related: #12, #34
