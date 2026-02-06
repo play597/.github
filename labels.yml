@@ -18,3 +18,7 @@
   color: "FEF2C0"
   description: "설정, 문서 등"
 
+- name: topic
+  color: "F28D1A"
+  description: "주제/토론"
+

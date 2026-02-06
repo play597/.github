@@ -116,6 +116,7 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 | Spec | `.github/ISSUE_TEMPLATE/spec.yml` | `spec` |
 | Bug | `.github/ISSUE_TEMPLATE/bug_report.yml` | `bug` |
 | Task | `.github/ISSUE_TEMPLATE/task.yml` | `task` |
+| Topic | `.github/ISSUE_TEMPLATE/topic.yml` | `topic` |
 
 ### 생성 플로우
 
@@ -267,6 +268,7 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
 | `spec` | 기능 명세 | spec.yml |
 | `bug` | 버그 수정 | bug_report.yml |
 | `task` | 일반 작업 | task.yml |
+| `topic` | 주제/토론 | topic.yml |
 | `chore` | 설정, 문서 등 | - |
 
 > **Note:** Priority와 Status는 라벨이 아닌 **GitHub Project 필드**에서 관리합니다.
