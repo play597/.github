@@ -22,3 +22,7 @@
   color: "F28D1A"
   description: "주제/토론"
 
+- name: docs
+  color: "0E8A16"
+  description: "기술문서 작성/수정"
+
