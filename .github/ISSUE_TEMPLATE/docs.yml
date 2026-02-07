@@ -1,0 +1,39 @@
+name: Docs (기술문서)
+description: 기술문서 작성/수정을 등록합니다
+title: "[Docs]: "
+labels: ["docs"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: 문서 작업 유형
+      options:
+        - 신규 작성
+        - 수정
+        - 삭제
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 내용
+      description: 어떤 문서를 작성/수정하려고 하나요?
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 참고 사항
+
+  - type: textarea
+    id: ai-context
+    attributes:
+      label: AI Context
+      description: AI가 이 이슈를 찾고 이해하는 데 필요한 정보
+      placeholder: |
+        keywords: Dream Security, 드림시큐리티, mobileOK, ACCOUNT_006
+        files: src/auth/mobileok.ts
+        deps: mok-key-manager
+        related: #12, #34
