@@ -1,6 +1,6 @@
 name: Docs (기술문서)
 description: 기술문서 작성/수정을 등록합니다
-title: "[Docs]: "
+title: ""
 labels: ["docs"]
 body:
   - type: dropdown

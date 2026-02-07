@@ -1,6 +1,6 @@
 name: Spec (기능 명세)
 description: 새로운 기능의 스펙을 작성합니다
-title: "[Spec]: "
+title: ""
 labels: ["spec"]
 body:
   - type: markdown

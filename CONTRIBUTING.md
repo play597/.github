@@ -11,7 +11,7 @@ GitHub Issue 기반의 **Spec-Driven 개발** 워크플로우입니다.
 1. 이슈 생성
    ├── 템플릿 파일 읽기 (.github/ISSUE_TEMPLATE/*.yml)
    ├── gh issue create (--repo, --label, --assignee, --project, --body)
-   └── 프로젝트 필드 설정 (Status=Todo, Priority, Iteration, Target Date)
+   └── 프로젝트 필드 설정 (Status=Todo, Priority, Iteration, CreatedAt)
 
 2. 작업 시작
    ├── Status → In-Progress로 변경
@@ -132,7 +132,7 @@ AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
 ```bash
 gh issue create \
   --repo play597/{repo} \
-  --title "[Type]: 제목" \
+  --title "제목" \
   --label "{label}" \
   --assignee @me \
   --project "play597" \
@@ -173,7 +173,7 @@ gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
   --field-id PVTIF_lADOCnQtDs4BOEu3zg88_CE \
   --iteration-id {iteration_id}
 
-# Target Date 설정
+# CreatedAt 설정
 gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
   --field-id PVTF_lADOCnQtDs4BOEu3zg88_Ho \
   --date YYYY-MM-DD
@@ -359,7 +359,7 @@ gh issue list
 gh issue create
 
 # 생성 (한 줄)
-gh issue create --repo play597/{repo} -t "[Spec]: 제목" -l "spec" --assignee @me --project "play597" -b "내용"
+gh issue create --repo play597/{repo} -t "제목" -l "spec" --assignee @me --project "play597" -b "내용"
 
 # 보기
 gh issue view 123
@@ -423,7 +423,7 @@ git add . && git commit -m "feat: 설명"
 gh pr create --title "feat: 설명" --body "Closes #123"
 
 # Issue 빠른 생성
-gh issue create --repo play597/{repo} -t "[Spec]: 제목" -l "spec" --assignee @me --project "play597" -b "내용"
+gh issue create --repo play597/{repo} -t "제목" -l "spec" --assignee @me --project "play597" -b "내용"
 ```
 
 ---
