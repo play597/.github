@@ -1,6 +1,5 @@
 name: Task (일반 작업)
 description: 일반 작업을 등록합니다
-title: ""
 labels: ["task"]
 body:
   - type: textarea

@@ -1,6 +1,5 @@
 name: Topic (주제/토론)
 description: 자유 형식으로 주제를 등록합니다
-title: ""
 labels: ["topic"]
 body:
   - type: textarea

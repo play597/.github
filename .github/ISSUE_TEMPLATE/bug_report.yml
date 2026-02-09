@@ -1,6 +1,5 @@
 name: Bug Report
 description: 버그를 신고합니다
-title: ""
 labels: ["bug"]
 body:
   - type: markdown
