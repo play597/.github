@@ -129,14 +129,50 @@ git checkout -b makeisss777/pla-200-프로필-이미지-변경
 ### PR 생성
 
 ```bash
-gh pr create --title "feat: 프로필 이미지 변경" --body "PLA-200"
+gh pr create --title "feat: 프로필 이미지 변경" --body "Fixes PLA-200"
 ```
 
 ### PR 규칙
 
-- **반드시 Linear 이슈 ID 포함**: 본문에 `PLA-200`
-- GitHub-Linear 연동 시 PR 머지 → 이슈 자동 Done
+- **반드시 Magic Word + Linear 이슈 ID 포함** (PR 본문에 작성)
 - PR 템플릿의 체크리스트 확인
+
+### Magic Words (이슈 연동 키워드)
+
+PR **본문(description)** 에 magic word + 이슈 ID를 적어야 Linear가 인식합니다.
+
+**Closing keywords** — 머지 시 이슈 자동 Done:
+
+| 키워드 그룹 | 변형 |
+|-------------|------|
+| close | close, closes, closed, closing |
+| fix | fix, fixes, fixed, fixing |
+| resolve | resolve, resolves, resolved, resolving |
+| complete | complete, completes, completed, completing |
+
+```
+예시: Fixes PLA-200
+      Fixes PLA-200, PLA-201 and PLA-202
+```
+
+**Contributing keywords** — 연결만, 머지해도 이슈 상태 안 바뀜:
+
+| 키워드 |
+|--------|
+| ref, references |
+| part of |
+| related to |
+| contributes to |
+| towards |
+
+```
+예시: Part of PLA-200
+```
+
+> **주의사항**
+> - magic word 없이 이슈 ID만 적으면 인식 안 됨
+> - 브랜치명에 이슈 ID가 있으면 해당 이슈 1개는 자동 연결
+> - 커밋 메시지에는 적용 안 됨, PR description에만 동작
 
 ### 커밋 메시지 규칙
 
@@ -224,7 +260,7 @@ gh pr create --title "feat: 프로필 이미지 변경" --body "PLA-200"
 
 ### PR 생성 전
 - [ ] lint/test 통과하는가?
-- [ ] Linear 이슈 ID 포함했는가? (PLA-번호)
+- [ ] Magic Word + Linear 이슈 ID 포함했는가? (예: `Fixes PLA-200`)
 
 ### 머지 전
 - [ ] CI 통과했는가?
@@ -240,5 +276,5 @@ git checkout -b makeisss777/pla-200-기능명
 
 # 작업 완료
 git add . && git commit -m "feat: 설명"
-gh pr create --title "feat: 설명" --body "PLA-200"
+gh pr create --title "feat: 설명" --body "Fixes PLA-200"
 ```
