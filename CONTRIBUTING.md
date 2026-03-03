@@ -1,312 +1,142 @@
 # play597 팀 워크플로우 가이드
 
-GitHub Issue 기반의 **Spec-Driven 개발** 워크플로우입니다.
+Linear + GitHub 기반의 **Spec-Driven 개발** 워크플로우입니다.
 사람과 AI 모두 이 문서를 참고하여 작업합니다.
 
----
-
-## AI 워크플로우 (Quick Start)
-
-```
-1. 이슈 생성
-   ├── 템플릿 파일 읽기 (.github/ISSUE_TEMPLATE/*.yml)
-   ├── gh issue create (--repo, --label, --assignee, --project, --body)
-   └── 프로젝트 필드 설정 (Status=Todo, Priority, Iteration, CreatedAt)
-
-2. 작업 시작
-   ├── Status → In-Progress로 변경
-   └── gh issue develop {번호} --checkout
-
-3. 개발
-   ├── 코드 작성
-   └── git commit -m "feat: 설명"
-
-4. PR & 완료
-   ├── gh pr create --body "Closes #{번호}"
-   └── 머지 시 Issue 자동 Close
-```
-
-> 상세 내용은 아래 섹션 참조
+> **역할 분담**: Linear = 업무 관리 (이슈, 스프린트, 문서) / GitHub = 코드 관리 (브랜치, PR, 리뷰)
 
 ---
 
 ## 워크플로우 개요
 
-```
-1. 논의      →  기능/작업 결정 (대화, AI 협업)
-2. Issue     →  Spec 작성 (GitHub Issue)
-3. 개발      →  Branch 생성 & 구현
-4. PR        →  코드 리뷰 & 머지
-5. Done      →  Issue 자동 Close
-```
-
-### 상태 흐름 (GitHub Project)
+### 계층 구조
 
 ```
-📋 Todo → 🚧 In-Progress → ✅ Done
+Initiative (서비스명)            예: 신고포상제
+└── Project (서비스명 - 기능)    예: 신고포상제 - 대용량 업로드
+    └── Milestone (단계)        예: 설계, 구현, 테스트 & 배포
+        └── Issue (작업)        예: R2 멀티파트 업로드 API 설계
+```
+
+### 작업 흐름
+
+```
+1. Initiative →  서비스 단위 목표 설정
+2. Project    →  기능 단위 정의 + Milestone + Initiative 지정
+3. Issue      →  실제 구현할 작업 쪼개기 (기능, 버그, 개선, 문서, 설정)
+4. 개발       →  Branch 생성 & 구현 (GitHub)
+5. PR         →  코드 리뷰 & 머지 (GitHub)
+6. Done       →  Linear 이슈 자동 완료
+```
+
+### 상태 흐름 (Linear Issue)
+
+```
+📥 Backlog → 📋 Todo → 🚧 In Progress → 👀 In Review → ✅ Done
 ```
 
 ---
 
-## 1. Issue 작성법
+## 1. Project 생성
+
+### Project = 기획 단위
+
+**규모 있는 작업은 Project로 만듭니다.** 논의, 기획, 목표를 Project에 정리하고, 그 안에서 프론트/백엔드 이슈를 생성합니다.
+
+`기본` 템플릿을 선택하면 설명 구조가 세팅됩니다. Milestone은 프로젝트 생성 시 함께 추가합니다.
+
+- **제목 규칙**: `서비스명 - 기능` (예: `신고포상제 - 대용량 업로드`)
+- **Initiative 지정**: 프로젝트 생성 시 해당 서비스의 Initiative 선택
+- **템플릿 관리**: Linear → Settings → Team (Play597) → Templates → Project
+
+### 구조 예시
+
+```
+Initiative: 신고포상제
+└── Project: 신고포상제 - 대용량 업로드
+    │
+    ├── Milestone: 설계
+    │   ├── PLA-200 R2 멀티파트 업로드 API 설계              (백엔드)
+    │   └── PLA-201 업로드 PoC 테스트                        (백엔드)
+    │
+    ├── Milestone: 구현
+    │   ├── PLA-202 청크 분할 업로드 API 구현                (백엔드)
+    │   ├── PLA-203 업로드 프로그레스바 UI                    (프론트)
+    │   └── PLA-204 대용량 파일 에러 핸들링 UI                (프론트)
+    │
+    └── Milestone: 테스트 & 배포
+        └── PLA-205 통합 테스트 & 배포                       (공통)
+```
+
+### 언제 Project를 만드는가?
+
+| Project 생성 | Issue만 생성 |
+|-------------|-------------|
+| 여러 이슈가 필요한 기능 개발 | 단일 버그 수정 |
+| 프론트 + 백엔드 협업 필요 | 간단한 설정 변경 |
+| 마일스톤 단계가 있는 작업 | 문서 수정, chore |
+| 기획/논의가 필요한 주제 | 명확한 단건 작업 |
+
+---
+
+## 2. Issue 생성
 
 ### Issue = Spec 문서
 
-**Issue 본문이 곧 기능 명세서입니다.** 별도 문서 없이 Issue로 모든 맥락을 관리합니다.
+**Issue 본문이 곧 기능 명세서입니다.** Project 하위에 생성하거나, 단독으로 생성합니다.
 
-AI가 이해하고 구현할 수 있도록 명확하게 작성하세요.
+### 이슈 템플릿
 
-### 좋은 Issue 예시
+`Option/Alt + C`로 템플릿을 선택하여 생성합니다.
 
-```markdown
-## 요약
-사용자가 프로필 이미지를 변경할 수 있다.
+| 템플릿 | 라벨 | 용도 |
+|--------|------|------|
+| 기능 | `기능` | 기능 명세 (상세 스펙 + 구현 이슈) |
+| 버그 | `버그` | 버그 수정 (재현 조건 + 기대 동작) |
 
-## 배경
-현재는 프로필 이미지 변경이 불가능해서 CS로 요청이 많음.
+### Workspace 라벨
 
-## 상세 스펙
-
-### 동작 흐름
-1. 프로필 페이지에서 이미지 클릭
-2. 파일 선택 다이얼로그 표시
-3. 이미지 선택 후 미리보기 표시
-4. 저장 버튼 클릭 시 업로드
-
-### 상세 내용
-- 지원 포맷: jpg, png, webp
-- 최대 크기: 5MB
-- 이미지 리사이즈: 200x200
-
-## 입력 / 출력
-
-**입력**: 이미지 파일
-**출력**:
-- 성공 → 업로드된 이미지 URL
-- 실패 → 에러 메시지
-
-## 예시
-- 정상: 1MB jpg 파일 → 업로드 성공
-- 에러: 10MB 파일 → "파일 크기 초과" 메시지
-
-## 완료 조건 (Acceptance Criteria)
-- [ ] 이미지 업로드 가능
-- [ ] 미리보기 표시
-- [ ] 에러 처리 (크기, 포맷)
-- [ ] 테스트 코드 작성
-```
-
-### Issue 작성 팁
-
-| DO ✅ | DON'T ❌ |
-|-------|----------|
-| 구체적인 동작 흐름 | 모호한 설명만 |
-| 입력/출력 명시 | "알아서 해줘" |
-| Acceptance Criteria 체크리스트 | 완료 기준 없음 |
-| 예시 케이스 포함 | 맥락 없이 단독 |
-
----
-
-## 2. AI 이슈 생성 플로우
-
-### 템플릿 파일
-
-| Type | 템플릿 파일 | Label |
-|------|-------------|-------|
-| Spec | `.github/ISSUE_TEMPLATE/spec.yml` | `spec` |
-| Bug | `.github/ISSUE_TEMPLATE/bug_report.yml` | `bug` |
-| Task | `.github/ISSUE_TEMPLATE/task.yml` | `task` |
-| Topic | `.github/ISSUE_TEMPLATE/topic.yml` | `topic` |
-
-### 생성 플로우
-
-```
-1. 이슈 유형 파악 (Spec/Bug/Task)
-2. 해당 템플릿 파일 읽기 → body 필드 구조 확인
-3. 템플릿 형식에 맞게 body 작성
-4. 이슈 생성
-```
-
-### 이슈 생성 명령어
-
-```bash
-gh issue create \
-  --repo play597/{repo} \
-  --title "제목" \
-  --label "{label}" \
-  --assignee @me \
-  --project "play597" \
-  --body "{템플릿 필드 구조에 맞춘 내용}"
-```
-
-> 팀원에게 할당 시: `--assignee @me` → `--assignee {username}`
-> 팀원 목록 조회: `gh api orgs/play597/members --jq '.[].login'`
-
-### 프로젝트 필드 설정 (CLI)
-
-이슈 생성 후 프로젝트 필드를 CLI로 설정합니다.
-
-**1. 아이템 ID 조회**
-
-```bash
-gh project item-list 5 --owner play597 --format json | jq -r '.items[] | select(.content.number == {이슈번호}) | .id'
-```
-
-**2. 필드 설정**
-
-```bash
-PROJECT_ID="PVT_kwDOCnQtDs4BOEu3"
-ITEM_ID="{조회한 아이템 ID}"
-
-# Status 설정
-gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
-  --field-id PVTSSF_lADOCnQtDs4BOEu3zg84eP4 \
-  --single-select-option-id {option_id}
-
-# Priority 설정
-gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
-  --field-id PVTSSF_lADOCnQtDs4BOEu3zg9AMZA \
-  --single-select-option-id {option_id}
-
-# Iteration 설정
-gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
-  --field-id PVTIF_lADOCnQtDs4BOEu3zg88_CE \
-  --iteration-id {iteration_id}
-
-# CreatedAt 설정
-gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
-  --field-id PVTF_lADOCnQtDs4BOEu3zg88_Ho \
-  --date YYYY-MM-DD
-```
-
-**필드 옵션 ID 참조**
-
-| Status | Option ID |
-|--------|-----------|
-| Todo | `f75ad846` |
-| In-Progress | `47fc9ee4` |
-| Done | `98236657` |
-
-| Priority | Option ID |
-|----------|-----------|
-| high | `f206906c` |
-| medium | `5d71a576` |
-| low | `d2751d36` |
-
-| Iteration | Option ID | 시작일 |
-|-----------|-----------|--------|
-| Iteration 1 | `c6894909` | 2026-02-03 |
-| Iteration 2 | `22f73190` | 2026-02-10 |
-| Iteration 3 | `72f9c5cc` | 2026-02-17 |
-
-> **Note:** 이슈 생성 시 Status는 기본값 없음. `Todo`로 설정 필요.
-
----
-
-## 3. 작업 시작 (Status 변경)
-
-작업 시작 시 Status를 `In-Progress`로 변경합니다.
-
-```bash
-PROJECT_ID="PVT_kwDOCnQtDs4BOEu3"
-ITEM_ID="{아이템 ID}"
-
-gh project item-edit --project-id $PROJECT_ID --id $ITEM_ID \
-  --field-id PVTSSF_lADOCnQtDs4BOEu3zg84eP4 \
-  --single-select-option-id 47fc9ee4
-```
-
----
-
-## 4. AI와 협업하기
-
-### Issue 생성 요청
-
-```
-"프로필 이미지 변경 기능 이슈 만들어줘"
-
-→ AI가 스펙 논의 후 이슈 생성
-→ 프로젝트 필드 자동 설정
-```
-
-### 스펙 논의 요청
-
-```
-"이 기능 어떻게 설계하면 좋을까?"
-
-→ 대화로 스펙 결정 → Issue 생성
-```
-
-### 구현 요청
-
-```
-좋은 예:
-"Issue #123 구현해줘"
-"이 스펙대로 만들어줘: [스펙 내용]"
-
-나쁜 예:
-"결제 기능 만들어줘" (스펙 없음)
-"알아서 해줘" (맥락 없음)
-```
-
-### AI가 참조하는 문서
-
-| 문서 | 용도 |
+| 라벨 | 용도 |
 |------|------|
-| `CLAUDE.md` | 코드 작성 규칙, 프로젝트 맥락 |
-| `AGENTS.md` | 디렉토리별 상세 문서 |
-| `CONTRIBUTING.md` | 워크플로우 (이 문서) |
+| `기능` | 새로운 기능 |
+| `버그` | 버그 수정 |
+| `개선` | 기존 기능 개선 |
+| `문서` | 기술 문서 |
+| `설정` | 설정, 빌드, 환경 등 |
+
+> 템플릿 관리: Linear → Settings → Team (Play597) → Templates
+
+### 이슈 생성 후
+
+- Linear이 자동으로 **이슈 ID** (PLA-200) 부여
+- Linear이 자동으로 **브랜치명** 생성 (gitBranchName)
+- Cycle에 배치하면 스프린트 보드에 표시
 
 ---
 
-## 5. Labels 체계
-
-### Type (필수)
-
-| Label | 용도 | 템플릿 |
-|-------|------|--------|
-| `spec` | 기능 명세 | spec.yml |
-| `bug` | 버그 수정 | bug_report.yml |
-| `task` | 일반 작업 | task.yml |
-| `topic` | 주제/토론 | topic.yml |
-| `chore` | 설정, 문서 등 | - |
-
-> **Note:** Priority와 Status는 라벨이 아닌 **GitHub Project 필드**에서 관리합니다.
-
----
-
-## 6. Branch & PR 규칙
+## 3. Branch & PR 규칙
 
 ### 브랜치 생성
 
+Linear 이슈의 `gitBranchName`을 그대로 사용합니다. (이슈 상세에서 복사 가능)
+
 ```bash
-# Issue에서 바로 브랜치 생성 (추천)
-gh issue develop 123 --checkout
+git checkout -b makeisss777/pla-200-프로필-이미지-변경
 ```
 
-### 브랜치 네이밍
-
-```
-feature/issue-{번호}-{설명}
-bugfix/issue-{번호}-{설명}
-chore/{설명}
-
-예시:
-feature/issue-123-profile-image
-bugfix/issue-45-login-error
-```
+형태: `{username}/pla-{번호}-{이슈제목}`
 
 ### PR 생성
 
 ```bash
-gh pr create --title "feat: 프로필 이미지 변경" --body "Closes #123"
+gh pr create --title "feat: 프로필 이미지 변경" --body "PLA-200"
 ```
 
 ### PR 규칙
 
-- **반드시 Issue 번호 연결**: `Closes #123`
+- **반드시 Linear 이슈 ID 포함**: 본문에 `PLA-200`
+- GitHub-Linear 연동 시 PR 머지 → 이슈 자동 Done
 - PR 템플릿의 체크리스트 확인
-- 머지 시 Issue 자동 Close
 
 ### 커밋 메시지 규칙
 
@@ -321,92 +151,82 @@ gh pr create --title "feat: 프로필 이미지 변경" --body "Closes #123"
 
 ---
 
-## 7. GitHub Project 사용
+## 4. Linear 설정 참조
 
-Org-level Project에서 모든 레포의 Issue를 통합 관리합니다.
+### Team: Play597
 
-### 뷰 (Views)
+모든 이슈는 Play597 팀 하위에서 관리합니다.
 
-| 뷰 | 용도 |
-|----|------|
-| **Board** | 칸반 보드 (상태별) |
-| **Table** | 전체 목록 (필터링, Repository별) |
+### 우선순위 (Priority)
 
-### 상태 변경
+| 값 | 레벨 | 기준 |
+|----|------|------|
+| 1 | Urgent | 즉시 처리 (장애, 핫픽스) |
+| 2 | High | 이번 Cycle 필수 |
+| 3 | Normal | 이번 Cycle 목표 |
+| 4 | Low | 여유 있을 때 |
 
-- Issue 생성 시 → `Todo` (CLI로 설정)
-- 작업 시작 → `In-Progress`
-- PR 머지 시 → `Done`
+### Cycle (스프린트)
 
----
-
-## 8. gh CLI 명령어
-
-### 설치 & 로그인
-
-```bash
-brew install gh
-gh auth login
-```
-
-### Issue
-
-```bash
-# 목록
-gh issue list
-
-# 생성 (대화형)
-gh issue create
-
-# 생성 (한 줄)
-gh issue create --repo play597/{repo} -t "제목" -l "spec" --assignee @me --project "play597" -b "내용"
-
-# 보기
-gh issue view 123
-
-# 브랜치 생성
-gh issue develop 123 --checkout
-```
-
-### PR
-
-```bash
-# 생성
-gh pr create --title "feat: 기능" --body "Closes #123"
-
-# 목록
-gh pr list
-
-# 보기
-gh pr view 456
-```
-
-### Project
-
-```bash
-# 목록
-gh project list --owner play597
-
-# 보기
-gh project view [NUMBER] --owner play597
-```
+- 2주 단위 자동 반복
+- Cycle 뷰에서 이슈를 드래그하여 배치
+- 번다운 차트로 진행률 자동 추적
 
 ---
 
-## 9. 체크리스트
+## 5. AI와 협업하기
+
+### Project 생성 요청
+
+```
+"신고포상제에 대용량 업로드 프로젝트 만들어줘"
+
+→ AI가 논의 후 Project 생성 (Initiative 지정 + Milestone 추가)
+→ 하위 이슈 구조 제안
+```
+
+### Issue 생성 요청
+
+```
+"신고포상제 - 대용량 업로드 프로젝트에 업로드 API 이슈 만들어줘"
+
+→ AI가 템플릿 구조에 맞춰 Issue 생성
+→ 우선순위·Cycle 설정
+```
+
+### 구현 요청
+
+```
+좋은 예:
+"PLA-200 구현해줘"
+"이 스펙대로 만들어줘: [스펙 내용]"
+
+나쁜 예:
+"결제 기능 만들어줘" (스펙 없음)
+```
+
+### AI가 참조하는 문서
+
+| 문서 | 위치 | 용도 |
+|------|------|------|
+| `CLAUDE.md` | 각 레포 | 코드 작성 규칙, 프로젝트 맥락 |
+| `CONTRIBUTING.md` | org `.github` | 워크플로우 (이 문서) |
+| Linear Documents | Linear 앱 | 프로젝트별 기획 문서 |
+
+---
+
+## 6. 체크리스트
 
 ### 작업 시작 전
-- [ ] 관련 Issue가 있는가?
-- [ ] Issue에 스펙이 명확한가?
+- [ ] Linear에 이슈가 있는가?
+- [ ] 이슈에 스펙이 명확한가?
 - [ ] Acceptance Criteria가 있는가?
 
 ### PR 생성 전
-- [ ] 테스트 코드 작성했는가?
 - [ ] lint/test 통과하는가?
-- [ ] Issue 번호 연결했는가?
+- [ ] Linear 이슈 ID 포함했는가? (PLA-번호)
 
 ### 머지 전
-- [ ] 리뷰 받았는가?
 - [ ] CI 통과했는가?
 - [ ] Acceptance Criteria 모두 체크했는가?
 
@@ -416,18 +236,9 @@ gh project view [NUMBER] --owner play597
 
 ```bash
 # 작업 시작
-gh issue develop 123 --checkout
+git checkout -b makeisss777/pla-200-기능명
 
 # 작업 완료
 git add . && git commit -m "feat: 설명"
-gh pr create --title "feat: 설명" --body "Closes #123"
-
-# Issue 빠른 생성
-gh issue create --repo play597/{repo} -t "제목" -l "spec" --assignee @me --project "play597" -b "내용"
+gh pr create --title "feat: 설명" --body "PLA-200"
 ```
-
----
-
-## Questions?
-
-궁금한 점이 있으면 Issue로 문의해주세요.
